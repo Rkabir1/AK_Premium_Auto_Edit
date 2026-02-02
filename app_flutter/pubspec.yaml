@@ -10,9 +10,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  image_picker: ^1.0.4
-  http: ^1.2.0
-  gallery_saver: ^2.3.2
 
+  http: ^0.13.6
+  file_picker: ^6.1.1
+  gallery_saver: ^2.3.2
 flutter:
   uses-material-design: true
