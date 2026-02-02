@@ -4,7 +4,8 @@ class EditConfig {
   double emotionSensitivity;
   bool autoBroll;
   bool subtitle;
-  List<String> dubLanguages;
+  bool emotionColor;
+  bool voiceDub;
   bool mrBeastMode;
 
   EditConfig({
@@ -13,17 +14,22 @@ class EditConfig {
     required this.emotionSensitivity,
     required this.autoBroll,
     required this.subtitle,
-    required this.dubLanguages,
+    required this.emotionColor,
+    required this.voiceDub,
     required this.mrBeastMode,
   });
 
-  Map<String, dynamic> toJson() => {
-        "face_tracking": faceTracking,
-        "emotion_crop": emotionCrop,
-        "emotion_sensitivity": emotionSensitivity,
-        "auto_broll": autoBroll,
-        "subtitle": subtitle,
-        "dub_languages": dubLanguages,
-        "mrbeast_mode": mrBeastMode,
-      };
+  Map<String, dynamic> toJson() {
+    return {
+      "face_tracking": faceTracking,
+      "emotion_crop": emotionCrop,
+      "emotion_sensitivity": emotionSensitivity,
+      "auto_broll": autoBroll,
+      "subtitle": subtitle,
+      "emotion_color": emotionColor,
+      "voice_dub": voiceDub,
+      "dub_languages": ["bn", "hi"],
+      "mrbeast_mode": mrBeastMode,
+    };
+  }
 }
