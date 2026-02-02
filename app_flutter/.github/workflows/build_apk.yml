@@ -1,0 +1,53 @@
+name: Build Flutter APK (AK Premium Auto Edit)
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Repo checkout
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ Java setup (Android এর জন্য)
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      # 3️⃣ Flutter setup
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      # 4️⃣ Flutter version check
+      - name: Flutter doctor
+        run: flutter doctor -v
+
+      # 5️⃣ App folder এ ঢোকা
+      - name: Go to Flutter app
+        run: |
+          cd app_flutter
+          flutter pub get
+
+      # 6️⃣ APK build
+      - name: Build release APK
+        run: |
+          cd app_flutter
+          flutter build apk --release
+
+      # 7️⃣ APK upload (Download করার জন্য)
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: AK-Premium-Auto-Edit-APK
+          path: app_flutter/build/app/outputs/flutter-apk/app-release.apk
