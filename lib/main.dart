@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
 
 void main() {
-  runApp(const AKAutoEdit());
+  runApp(const AKApp());
 }
 
-class AKAutoEdit extends StatelessWidget {
-  const AKAutoEdit({super.key});
+class AKApp extends StatelessWidget {
+  const AKApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'AK Premium Auto Edit',
       debugShowCheckedModeBanner: false,
+      title: 'AK Premium Auto Edit',
+      theme: ThemeData.dark(),
       home: HomeScreen(),
     );
   }
