@@ -1,0 +1,9 @@
+{
+  "face_tracking": true,
+  "emotion_crop": true,
+  "emotion_sensitivity": 0.8,
+  "auto_broll": true,
+  "subtitle": true,
+  "dub_languages": ["bn", "hi"],
+  "mrbeast_mode": true
+}
