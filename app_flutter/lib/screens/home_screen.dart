@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:file_picker/file_picker.dart';
-import '../services/github_trigger.dart';
 import '../models/edit_config.dart';
+import '../services/github_trigger.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,93 +10,137 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String? videoPath;
-
   bool faceTracking = true;
   bool emotionCrop = true;
   bool autoSubtitle = true;
+  bool emotionColor = true;
+  bool noiseReduction = true;
+
   bool mrBeastMode = false;
 
-  Future<void> pickVideo() async {
-    final result = await FilePicker.platform.pickFiles(type: FileType.video);
-    if (result != null) {
-      setState(() {
-        videoPath = result.files.single.path;
-      });
-    }
-  }
+  String mode = "reel";
 
-  Future<void> runAutoEdit() async {
-    if (videoPath == null) return;
-
+  void runAutoEdit() async {
     final config = EditConfig(
       faceTracking: faceTracking,
       emotionCrop: emotionCrop,
       autoSubtitle: autoSubtitle,
+      emotionColor: emotionColor,
+      noiseReduction: noiseReduction,
+      mode: mode,
       mrBeastMode: mrBeastMode,
-      videoPath: videoPath!,
     );
 
     await GitHubTrigger.runWorkflow(
-      config: config.toJson(),
+      "YOUR_GITHUB_TOKEN",
+      config.toJson(),
     );
 
+    if (!mounted) return;
+
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("🚀 Auto Edit Started")),
+      const SnackBar(content: Text("🔥 Auto Edit Started on GitHub")),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("AK Premium Auto Edit")),
-      body: Padding(
+      appBar: AppBar(
+        title: const Text("AK Premium Auto Edit"),
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ElevatedButton(
-              onPressed: pickVideo,
-              child: const Text("🎥 Select Video"),
+            const Text(
+              "Edit Options",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            if (videoPath != null)
-              Text(
-                videoPath!,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            const Divider(),
+
             SwitchListTile(
               title: const Text("Face Tracking"),
               value: faceTracking,
               onChanged: (v) => setState(() => faceTracking = v),
             ),
+
             SwitchListTile(
-              title: const Text("Emotion Crop"),
+              title: const Text("Emotion Reactive Crop"),
               value: emotionCrop,
               onChanged: (v) => setState(() => emotionCrop = v),
             ),
+
+            SwitchListTile(
+              title: const Text("Noise Reduction"),
+              value: noiseReduction,
+              onChanged: (v) => setState(() => noiseReduction = v),
+            ),
+
             SwitchListTile(
               title: const Text("Auto Subtitle"),
               value: autoSubtitle,
               onChanged: (v) => setState(() => autoSubtitle = v),
             ),
+
+            SwitchListTile(
+              title: const Text("Emotion Color Subtitle"),
+              value: emotionColor,
+              onChanged: (v) => setState(() => emotionColor = v),
+            ),
+
+            const SizedBox(height: 10),
+
+            const Text(
+              "Video Mode",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+
+            RadioListTile(
+              title: const Text("Reel (9:16)"),
+              value: "reel",
+              groupValue: mode,
+              onChanged: (v) => setState(() => mode = v.toString()),
+            ),
+
+            RadioListTile(
+              title: const Text("Full Video"),
+              value: "full",
+              groupValue: mode,
+              onChanged: (v) => setState(() => mode = v.toString()),
+            ),
+
+            const Divider(),
+
             SwitchListTile(
               title: const Text("🔥 MrBeast Mode"),
               value: mrBeastMode,
-              onChanged: (v) => setState(() => mrBeastMode = v),
+              onChanged: (v) {
+                setState(() {
+                  mrBeastMode = v;
+                  if (v) {
+                    faceTracking = true;
+                    emotionCrop = true;
+                    autoSubtitle = true;
+                    emotionColor = true;
+                    noiseReduction = true;
+                  }
+                });
+              },
             ),
+
             const SizedBox(height: 20),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                padding: const EdgeInsets.all(16),
+
+            Center(
+              child: ElevatedButton(
+                onPressed: runAutoEdit,
+                child: const Text("🚀 RUN AUTO EDIT"),
               ),
-              onPressed: runAutoEdit,
-              child: const Text("RUN AUTO EDIT 🚀"),
             ),
           ],
         ),
       ),
     );
   }
-{
+}
